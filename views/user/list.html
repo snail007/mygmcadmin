@@ -1,0 +1,84 @@
+<div class="container-fluid p-t-15">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-toolbar d-flex flex-column flex-md-row">
+                    <div class="toolbar-btn-action">
+                        <a class="btn btn-primary m-r-5" href="/user/add"><i class="mdi mdi-plus"></i> 新增</a>
+                        <a class="btn btn-danger m-r-5 ajax-post confirm" href="/user/delete"
+                           target-form="ids"><i class="mdi mdi-check"></i> 删除</a>
+                    </div>
+
+                    <form class="search-bar ml-md-auto" method="get" action="#!" role="form">
+                        <input type="hidden" name="search_field" id="search-field" value="username"/>
+                        <div class="input-group ml-md-auto">
+                            <div class="input-group-prepend">
+                                <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown"
+                                        aria-haspopup="true" aria-expanded="false" id="search-btn">用户名
+                                </button>
+                                <div class="dropdown-menu" style="">
+                                    <a class="dropdown-item" href="#!" data-field="username">用户名</a>
+                                    <a class="dropdown-item" href="#!" data-field="nickname">昵称</a>
+                                    <a class="dropdown-item" href="#!" data-field="user_id">用户ID</a>
+                                </div>
+                            </div>
+                            <input type="text" class="form-control" name="keyword" placeholder="请输入">
+                        </div>
+                    </form>
+                </div>
+                <div class="card-body">
+
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                            <tr>
+                                <th>
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" class="custom-control-input" id="check-all">
+                                        <label class="custom-control-label" for="check-all"></label>
+                                    </div>
+                                </th>
+                                <th>用户ID</th>
+                                <th>昵称</th>
+                                <th>用户名</th>
+                                <th>修改时间</th>
+                                <th>创建时间</th>
+                                <th>操作</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {{ range $u := .users}}
+                                <tr>
+                                    <td>
+                                        <div class="custom-control custom-checkbox">
+                                            <input type="checkbox" class="custom-control-input ids" name="ids" value="{{$u.user_id}}"
+                                                   id="ids-{{$u.user_id}}">
+                                            <label class="custom-control-label" for="ids-{{$u.user_id}}"></label>
+                                        </div>
+                                    </td>
+                                    <td>{{$u.user_id}}</td>
+                                    <td>{{$u.nickname}}</td>
+                                    <td>{{$u.username}}</td>
+                                    <td>{{$u.update_time | date "2006-01-02 15:04"}}</td>
+                                    <td>{{$u.create_time | date "2006-01-02 15:04"}}</td>
+                                    <td>
+                                        <div class="btn-group">
+                                            <a class="btn btn-xs btn-default" href="/user/edit?id={{$u.user_id}}" title="" data-toggle="tooltip"
+                                               data-original-title="编辑"><i class="mdi mdi-pencil"></i></a>
+                                            <a class="btn btn-xs btn-default ajax-get confirm"
+                                               href="/user/delete?ids={{$u.user_id}}" title=""
+                                               data-toggle="tooltip"
+                                               data-original-title="删除"><i class="mdi mdi-window-close"></i></a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {{end}}
+                            </tbody>
+                        </table>
+                    </div>
+                    {{template "paginator/default" .}}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

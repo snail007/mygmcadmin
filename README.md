@@ -1,2 +1,0 @@
-# mygmcadmin
-gmc admin demo
