@@ -1,2 +1,4 @@
 gmcrun.toml
 go.sum
+*_gmcrun
+.sessions

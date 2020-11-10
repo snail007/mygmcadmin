@@ -3,6 +3,7 @@ package controller
 import (
 	"github.com/snail007/gmc"
 	"mygmcadmin/model"
+	"time"
 )
 
 type User struct {
@@ -15,18 +16,23 @@ func (this *User) Add() {
 
 func (this *User) Create() {
 	username := this.Ctx.POST("username")
+	nickname := this.Ctx.POST("nickname")
 	password := this.Ctx.POST("password")
 	password1 := this.Ctx.POST("password1")
 	if username == "" || password == "" || password != password1 {
 		this.JsonFail("信息不完整")
 	}
-	dbUser, err := model.User.MGetBy(gmc.M{"username": username})
+	dbUser, err := model.User.GetBy(gmc.M{"username": username})
 	if err != nil || len(dbUser) > 0 {
 		this.JsonFail("用户已经存在")
 	}
+	now:=time.Now().Unix()
 	data := gmc.M{
 		"username": username,
+		"nickname":nickname,
 		"password": model.EncodePassword(password),
+		"create_time":now,
+		"update_time":now,
 	}
 	_, err = model.User.Insert(data)
 	this.StopE(err, func() {
@@ -69,7 +75,10 @@ func (this *User) Save() {
 	}
 	data := gmc.M{
 		"nickname": nickname,
-		"password": password,
+		"update_time":time.Now().Unix(),
+	}
+	if password!=""{
+		data["data"]=password
 	}
 	_, err = model.User.UpdateByIDs([]string{userID},data)
 	this.StopE(err, func() {
