@@ -61,7 +61,7 @@ func (s *UserModel) MGetByIDs(ids []string, orderBy ...interface{}) (ret gmc.Mss
 	ar := db.AR().From(s.table).Where(gmc.M{
 		s.pkey: ids,
 	})
-	if col, by := OrderBy(orderBy...); col != "" {
+	if col, by := s.OrderBy(orderBy...); col != "" {
 		ar.OrderBy(col, by)
 	}
 	rs, err := db.Query(ar)
@@ -74,8 +74,8 @@ func (s *UserModel) MGetByIDs(ids []string, orderBy ...interface{}) (ret gmc.Mss
 
 func (s *UserModel) MGetBy(where gmc.M, orderBy ...interface{}) (ret []gmc.Mss, error error) {
 	db := s.DB()
-	ar:=db.AR().From(s.table).Where(where).Limit(0, 1)
-	if col, by := OrderBy(orderBy...); col != "" {
+	ar := db.AR().From(s.table).Where(where).Limit(0, 1)
+	if col, by := s.OrderBy(orderBy...); col != "" {
 		ar.OrderBy(col, by)
 	}
 	rs, err := db.Query(ar)
@@ -150,7 +150,7 @@ func (s *UserModel) UpdateBy(where, data gmc.M) (cnt int64, err error) {
 	return
 }
 
-func (s *UserModel) Page(where gmc.M, offset, length int,orderBy ...interface{}) (ret []gmc.Mss, total int, err error) {
+func (s *UserModel) Page(where gmc.M, offset, length int, orderBy ...interface{}) (ret []gmc.Mss, total int, err error) {
 	db := s.DB()
 	ar := db.AR().Select("count(*) as total").From(s.table)
 	if len(where) > 0 {
@@ -166,7 +166,7 @@ func (s *UserModel) Page(where gmc.M, offset, length int,orderBy ...interface{})
 	if len(where) > 0 {
 		ar.Where(where)
 	}
-	if col, by := OrderBy(orderBy...); col != "" {
+	if col, by := s.OrderBy(orderBy...); col != "" {
 		ar.OrderBy(col, by)
 	}
 	rs, err = db.Query(ar)
@@ -174,5 +174,23 @@ func (s *UserModel) Page(where gmc.M, offset, length int,orderBy ...interface{})
 		return
 	}
 	ret = rs.Rows()
+	return
+}
+
+func (s *UserModel) OrderBy(orderBy ...interface{}) (col, by string) {
+	if len(orderBy) > 0 {
+		switch val := orderBy[0].(type) {
+		case gmc.M:
+			for k, v := range val {
+				col, by = k, v.(string)
+				break
+			}
+		case gmc.Mss:
+			for k, v := range val {
+				col, by = k, v
+				break
+			}
+		}
+	}
 	return
 }
