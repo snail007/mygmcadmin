@@ -6,15 +6,15 @@ type Base struct {
 	gmc.Controller
 }
 
-func (this *Base) JsonSuccess(msg string, data ...interface{}) {
-	this.JSON(msg,200,data...)
+func (this *Base) _JsonSuccess(msg string, data ...interface{}) {
+	this._JSON(msg,200,data...)
 }
 
-func (this *Base) JsonFail(msg string) {
-	this.JSON(msg,500)
+func (this *Base) _JsonFail(msg string) {
+	this._JSON(msg,500)
 }
 
-func (this *Base) JSON(msg string, code int, data ...interface{}) {
+func (this *Base) _JSON(msg string, code int, data ...interface{}) {
 	var data0 interface{}
 	var url1 interface{}
 	if len(data) >= 1 {

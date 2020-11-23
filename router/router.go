@@ -15,7 +15,7 @@ func InitRouter(s *gmc.HTTPServer) {
 	//r.ControllerMethod("/", new(controller.Demo), "Index__")
 	//r.ControllerMethod("/index.html", new(controller.Demo), "Index__")
 
-	r.ControllerMethod("/", new(controller.Login), "Index")
+	r.ControllerMethod("/", new(controller.Login), "Index_")
 	r.Controller("/login", new(controller.Login))
 	r.Controller("/main", new(controller.Main))
 	r.Controller("/user", new(controller.User))

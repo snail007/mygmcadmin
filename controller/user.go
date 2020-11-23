@@ -10,6 +10,58 @@ type User struct {
 	Admin
 }
 
+func (this *User) Profile() {
+	if this.Ctx.IsAJAX() {
+ 		nickname := this.Ctx.POST("nickname")
+		this.User["nickname"] = nickname
+		data := gmc.M{
+			"nickname":    nickname,
+			"update_time": time.Now().Unix(),
+		}
+		_, err := model.User.UpdateByIDs([]string{this.User["user_id"]}, data)
+		this.StopE(err, func() {
+			this._JsonFail(err.Error())
+		}, func() {
+			this.Session.Set("admin",this.User)
+			this._JsonSuccess("", nil, "/user/profile")
+		})
+	} else {
+		this.View.Layout("page").Render("user/profile")
+	}
+}
+
+func (this *User) Password() {
+	if this.Ctx.IsAJAX() {
+ 		password := this.Ctx.POST("password")
+		password1 := this.Ctx.POST("password1")
+		password2 := this.Ctx.POST("password2")
+		if password==""||password1 == ""||(password1 != password2) {
+			this._JsonFail("信息不完整")
+		}
+		password0 := ""
+		dbUser, err := model.User.GetByID(this.User["user_id"])
+		if err != nil || len(dbUser) == 0 {
+			this._JsonFail("用户不存在")
+		}
+		if dbUser["password"]!=model.EncodePassword(password){
+			this._JsonFail("当前密码错误")
+		}
+		password0=model.EncodePassword(password1)
+		data := gmc.M{
+			"password":password0,
+			"update_time": time.Now().Unix(),
+		}
+		_, err = model.User.UpdateByIDs([]string{this.User["user_id"]}, data)
+		this.StopE(err, func() {
+			this._JsonFail(err.Error())
+		}, func() {
+			this._JsonSuccess("", nil, "/user/password")
+		})
+	} else {
+		this.View.Layout("page").Render("user/password")
+	}
+}
+
 func (this *User) Add() {
 	this.View.Layout("form").Render("user/form")
 }
@@ -20,38 +72,38 @@ func (this *User) Create() {
 	password := this.Ctx.POST("password")
 	password1 := this.Ctx.POST("password1")
 	if username == "" || password == "" || password != password1 {
-		this.JsonFail("信息不完整")
+		this._JsonFail("信息不完整")
 	}
 	dbUser, err := model.User.GetBy(gmc.M{"username": username})
 	if err != nil || len(dbUser) > 0 {
-		this.JsonFail("用户已经存在")
+		this._JsonFail("用户已经存在")
 	}
-	now:=time.Now().Unix()
+	now := time.Now().Unix()
 	data := gmc.M{
-		"username": username,
-		"nickname":nickname,
-		"password": model.EncodePassword(password),
-		"create_time":now,
-		"update_time":now,
+		"username":    username,
+		"nickname":    nickname,
+		"password":    model.EncodePassword(password),
+		"create_time": now,
+		"update_time": now,
 	}
 	_, err = model.User.Insert(data)
 	this.StopE(err, func() {
-		this.JsonFail(err.Error())
+		this._JsonFail(err.Error())
 	}, func() {
-		this.JsonSuccess("", nil, "/user/list")
+		this._JsonSuccess("", nil, "/user/list")
 	})
 }
 
 func (this *User) Edit() {
-	userID:=this.Ctx.GET("id")
-	if userID==""{
+	userID := this.Ctx.GET("id")
+	if userID == "" {
 		this.Ctx.Redirect("/user/list")
 	}
-	user,err:=model.User.GetByID(userID)
+	user, err := model.User.GetByID(userID)
 	this.StopE(err, func() {
-		this.JsonFail(err.Error())
+		this._JsonFail(err.Error())
 	})
-	this.View.Set("user",user)
+	this.View.Set("user", user)
 	this.View.Layout("form").Render("user/form")
 }
 
@@ -59,32 +111,32 @@ func (this *User) Save() {
 	nickname := this.Ctx.POST("nickname")
 	password := this.Ctx.POST("password")
 	password1 := this.Ctx.POST("password1")
-	userID:=this.Ctx.GET("id")
-	if userID==""{
+	userID := this.Ctx.GET("id")
+	if userID == "" {
 		this.Ctx.Redirect("/user/list")
 	}
-	if password != ""  {
-		if password != password1{
-			this.JsonFail("信息不完整")
+	if password != "" {
+		if password != password1 {
+			this._JsonFail("信息不完整")
 		}
-		password=model.EncodePassword(password)
+		password = model.EncodePassword(password)
 	}
-	dbUser,err:=model.User.GetByID(userID)
+	dbUser, err := model.User.GetByID(userID)
 	if err != nil || len(dbUser) == 0 {
-		this.JsonFail("用户不存在")
+		this._JsonFail("用户不存在")
 	}
 	data := gmc.M{
-		"nickname": nickname,
-		"update_time":time.Now().Unix(),
+		"nickname":    nickname,
+		"update_time": time.Now().Unix(),
 	}
-	if password!=""{
-		data["data"]=password
+	if password != "" {
+		data["data"] = password
 	}
-	_, err = model.User.UpdateByIDs([]string{userID},data)
+	_, err = model.User.UpdateByIDs([]string{userID}, data)
 	this.StopE(err, func() {
-		this.JsonFail(err.Error())
+		this._JsonFail(err.Error())
 	}, func() {
-		this.JsonSuccess("", nil, "/user/list")
+		this._JsonSuccess("", nil, "/user/list")
 	})
 }
 
@@ -95,28 +147,28 @@ func (this *User) Delete() {
 	if len(id) > 0 {
 		ids = append(ids, id...)
 	}
-	for _,v:=range ids{
-		if v=="1"{
-			this.JsonFail("系统账号禁止删除")
+	for _, v := range ids {
+		if v == "1" {
+			this._JsonFail("系统账号禁止删除")
 		}
 	}
 	_, err := model.User.UpdateByIDs(ids, gmc.M{"is_delete": 1})
 	this.StopE(err, func() {
-		this.JsonFail(err.Error())
+		this._JsonFail(err.Error())
 	})
-	this.JsonSuccess("", nil, "/user/list")
+	this._JsonSuccess("", nil, "/user/list")
 }
 
 func (this *User) List() {
-	search_field:=this.Ctx.GET("search_field")
-	keyword:=this.Ctx.GET("keyword")
-	where:=gmc.M{"is_delete": 0}
-	rule:=map[string]bool{"username":true,"nickname":true,"user_id":true}
-	if search_field!=""&&keyword!=""&&rule[search_field]{
-		if search_field=="user_id"{
-			where[search_field]=keyword
-		}else{
-			where[search_field+" like"]="%"+keyword+"%"
+	search_field := this.Ctx.GET("search_field")
+	keyword := this.Ctx.GET("keyword")
+	where := gmc.M{"is_delete": 0}
+	rule := map[string]bool{"username": true, "nickname": true, "user_id": true}
+	if search_field != "" && keyword != "" && rule[search_field] {
+		if search_field == "user_id" {
+			where[search_field] = keyword
+		} else {
+			where[search_field+" like"] = "%" + keyword + "%"
 		}
 	}
 	perPage := gmc.ToInt(this.Ctx.GET("count"))
@@ -135,4 +187,3 @@ func (this *User) List() {
 	this.View.Set("paginator", this.Ctx.NewPager(perPage, int64(total)))
 	this.View.Layout("list").Render("user/list")
 }
-
