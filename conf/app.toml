@@ -85,7 +85,7 @@ layout="layout"
 [session]
 # turn on/off session
 enable=true
-store="file"
+store="memory"
 cookiename="gmcsid"
 ttl=3600
 
