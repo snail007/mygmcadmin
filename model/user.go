@@ -6,7 +6,7 @@ import (
 )
 
 type UserModel struct {
-	db    *gmc.MySQL
+	db    gmc.Database
 	table string
 	pkey  string
 	once  *sync.Once
@@ -25,10 +25,10 @@ func NewUserModel() *UserModel {
 	return u
 }
 
-func (s *UserModel) DB() *gmc.MySQL {
+func (s *UserModel) DB() gmc.Database {
 	if s.db == nil {
 		s.once.Do(func() {
-			s.db = gmc.DB.MySQL()
+			s.db = gmc.DB.DB()
 		})
 	}
 	return s.db
