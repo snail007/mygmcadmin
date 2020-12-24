@@ -2,6 +2,7 @@ package controller
 
 import (
 	"github.com/snail007/gmc"
+	"github.com/snail007/gmc/util/cast"
 	"mygmcadmin/model"
 	"time"
 )
@@ -171,11 +172,11 @@ func (this *User) List() {
 			where[search_field+" like"] = "%" + keyword + "%"
 		}
 	}
-	perPage := gmc.ToInt(this.Ctx.GET("count"))
+	perPage := gcast.ToInt(this.Ctx.GET("count"))
 	if perPage <= 0 || perPage > 100 {
 		perPage = 10
 	}
-	offset := perPage * (gmc.ToInt(this.Ctx.GET("page")) - 1)
+	offset := perPage * (gcast.ToInt(this.Ctx.GET("page")) - 1)
 	if offset < 0 {
 		offset = 0
 	}

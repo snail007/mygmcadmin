@@ -2,6 +2,7 @@ package model
 
 import (
 	"github.com/snail007/gmc"
+	gcast "github.com/snail007/gmc/util/cast"
 	"sync"
 )
 
@@ -92,7 +93,7 @@ func (s *UserModel) DeleteBy(where gmc.M) (cnt int64, err error) {
 	if err != nil {
 		return
 	}
-	cnt = rs.RowsAffected
+	cnt = rs.RowsAffected()
 	return
 }
 
@@ -104,7 +105,7 @@ func (s *UserModel) DeleteByIDs(ids []string) (cnt int64, err error) {
 	if err != nil {
 		return
 	}
-	cnt = rs.RowsAffected
+	cnt = rs.RowsAffected()
 	return
 }
 
@@ -114,7 +115,7 @@ func (s *UserModel) Insert(data gmc.M) (cnt int64, err error) {
 	if err != nil {
 		return
 	}
-	cnt = rs.RowsAffected
+	cnt = rs.RowsAffected()
 	return
 }
 
@@ -124,7 +125,7 @@ func (s *UserModel) InsertBatch(data []gmc.M) (cnt int64, err error) {
 	if err != nil {
 		return
 	}
-	cnt = rs.RowsAffected
+	cnt = rs.RowsAffected()
 	return
 }
 
@@ -136,7 +137,7 @@ func (s *UserModel) UpdateByIDs(ids []string, data gmc.M) (cnt int64, err error)
 	if err != nil {
 		return
 	}
-	cnt = rs.RowsAffected
+	cnt = rs.RowsAffected()
 	return
 }
 
@@ -146,7 +147,7 @@ func (s *UserModel) UpdateBy(where, data gmc.M) (cnt int64, err error) {
 	if err != nil {
 		return
 	}
-	cnt = rs.RowsAffected
+	cnt = rs.RowsAffected()
 	return
 }
 
@@ -160,7 +161,7 @@ func (s *UserModel) Page(where gmc.M, offset, length int, orderBy ...interface{}
 	if err != nil {
 		return
 	}
-	total = gmc.ToInt(rs.Value("total"))
+	total = gcast.ToInt(rs.Value("total"))
 
 	ar = db.AR().From(s.table).Where(where).Limit(offset, length)
 	if len(where) > 0 {
