@@ -2,7 +2,7 @@ package model
 
 import (
 	"github.com/snail007/gmc"
-	gcast "github.com/snail007/gmc/util/cast"
+	"strconv"
 	"sync"
 )
 
@@ -161,8 +161,8 @@ func (s *UserModel) Page(where gmc.M, offset, length int, orderBy ...interface{}
 	if err != nil {
 		return
 	}
-	total = gcast.ToInt(rs.Value("total"))
-
+	t, _ := strconv.ParseInt(rs.Value("total"), 10, 64)
+	total = int(t)
 	ar = db.AR().From(s.table).Where(where).Limit(offset, length)
 	if len(where) > 0 {
 		ar.Where(where)
