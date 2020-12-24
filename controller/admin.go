@@ -1,12 +1,12 @@
 package controller
 
 import (
-	"github.com/snail007/gmc"
+	gmap "github.com/snail007/gmc/util/map"
 )
 
 type Admin struct {
 	Base
-	User gmc.Mss
+	User gmap.Mss
 }
 
 func (this *Admin) Before() {
@@ -23,10 +23,10 @@ func (this *Admin) Before() {
 	this.View.Set("admin",this.User)
 }
 
-func (this *Admin) _IsLogin() (user gmc.Mss, isLogin bool) {
+func (this *Admin) _IsLogin() (user gmap.Mss, isLogin bool) {
 	u := this.Session.Get("admin")
-	if u != nil && u.(gmc.Mss)["username"] != "" {
-		return u.(gmc.Mss), true
+	if u != nil && u.(gmap.Mss)["username"] != "" {
+		return u.(gmap.Mss), true
 	}
 	return nil, false
 }

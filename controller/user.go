@@ -1,8 +1,8 @@
 package controller
 
 import (
-	"github.com/snail007/gmc"
 	"github.com/snail007/gmc/util/cast"
+	gmap "github.com/snail007/gmc/util/map"
 	"mygmcadmin/model"
 	"time"
 )
@@ -15,7 +15,7 @@ func (this *User) Profile() {
 	if this.Ctx.IsAJAX() {
  		nickname := this.Ctx.POST("nickname")
 		this.User["nickname"] = nickname
-		data := gmc.M{
+		data := gmap.M{
 			"nickname":    nickname,
 			"update_time": time.Now().Unix(),
 		}
@@ -48,7 +48,7 @@ func (this *User) Password() {
 			this._JsonFail("当前密码错误")
 		}
 		password0=model.EncodePassword(password1)
-		data := gmc.M{
+		data := gmap.M{
 			"password":password0,
 			"update_time": time.Now().Unix(),
 		}
@@ -75,12 +75,12 @@ func (this *User) Create() {
 	if username == "" || password == "" || password != password1 {
 		this._JsonFail("信息不完整")
 	}
-	dbUser, err := model.User.GetBy(gmc.M{"username": username})
+	dbUser, err := model.User.GetBy(gmap.M{"username": username})
 	if err != nil || len(dbUser) > 0 {
 		this._JsonFail("用户已经存在")
 	}
 	now := time.Now().Unix()
-	data := gmc.M{
+	data := gmap.M{
 		"username":    username,
 		"nickname":    nickname,
 		"password":    model.EncodePassword(password),
@@ -126,7 +126,7 @@ func (this *User) Save() {
 	if err != nil || len(dbUser) == 0 {
 		this._JsonFail("用户不存在")
 	}
-	data := gmc.M{
+	data := gmap.M{
 		"nickname":    nickname,
 		"update_time": time.Now().Unix(),
 	}
@@ -153,7 +153,7 @@ func (this *User) Delete() {
 			this._JsonFail("系统账号禁止删除")
 		}
 	}
-	_, err := model.User.UpdateByIDs(ids, gmc.M{"is_delete": 1})
+	_, err := model.User.UpdateByIDs(ids, gmap.M{"is_delete": 1})
 	this.StopE(err, func() {
 		this._JsonFail(err.Error())
 	})
@@ -163,7 +163,7 @@ func (this *User) Delete() {
 func (this *User) List() {
 	search_field := this.Ctx.GET("search_field")
 	keyword := this.Ctx.GET("keyword")
-	where := gmc.M{"is_delete": 0}
+	where := gmap.M{"is_delete": 0}
 	rule := map[string]bool{"username": true, "nickname": true, "user_id": true}
 	if search_field != "" && keyword != "" && rule[search_field] {
 		if search_field == "user_id" {

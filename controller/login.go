@@ -3,6 +3,7 @@ package controller
 import (
 	"github.com/snail007/gmc"
 	gmccaptcha "github.com/snail007/gmc/util/captcha"
+	gmap "github.com/snail007/gmc/util/map"
 	"image/png"
 	"mygmcadmin/model"
 	"strings"
@@ -22,7 +23,7 @@ func (this *Login) Auth() {
 		this.Stop(err)
 	}
 	u := this.Session.Get("admin")
-	if u != nil && u.(gmc.Mss)["username"] != "" {
+	if u != nil && u.(gmap.Mss)["username"] != "" {
 		this._JsonSuccess("","","/main/index")
 	}
 	captcha := strings.TrimSpace(this.Ctx.POST("captcha"))
@@ -42,7 +43,7 @@ func (this *Login) Auth() {
 	if password == "" || username == "" {
 		this._JsonFail("信息不完整")
 	}
-	dbUser, err := model.User.GetBy(gmc.M{"username": username})
+	dbUser, err := model.User.GetBy(gmap.M{"username": username})
 	if err != nil || len(dbUser) == 0 {
 		this._JsonFail("用户名或密码错误")
 	}

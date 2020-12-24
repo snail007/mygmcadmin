@@ -2,12 +2,14 @@ package model
 
 import (
 	"github.com/snail007/gmc"
+	gcore "github.com/snail007/gmc/core"
+	gmap "github.com/snail007/gmc/util/map"
 	"strconv"
 	"sync"
 )
 
 type UserModel struct {
-	db    gmc.Database
+	db    gcore.Database
 	table string
 	pkey  string
 	once  *sync.Once
@@ -26,7 +28,7 @@ func NewUserModel() *UserModel {
 	return u
 }
 
-func (s *UserModel) DB() gmc.Database {
+func (s *UserModel) DB() gcore.Database {
 	if s.db == nil {
 		s.once.Do(func() {
 			s.db = gmc.DB.DB()
@@ -35,9 +37,9 @@ func (s *UserModel) DB() gmc.Database {
 	return s.db
 }
 
-func (s *UserModel) GetByID(id string) (ret gmc.Mss, error error) {
+func (s *UserModel) GetByID(id string) (ret gmap.Mss, error error) {
 	db := s.DB()
-	rs, err := db.Query(db.AR().From(s.table).Where(gmc.M{
+	rs, err := db.Query(db.AR().From(s.table).Where(gmap.M{
 		s.pkey: id,
 	}).Limit(0, 1))
 	if err != nil {
@@ -47,7 +49,7 @@ func (s *UserModel) GetByID(id string) (ret gmc.Mss, error error) {
 	return
 }
 
-func (s *UserModel) GetBy(where gmc.M) (ret gmc.Mss, error error) {
+func (s *UserModel) GetBy(where gmap.M) (ret gmap.Mss, error error) {
 	db := s.DB()
 	rs, err := db.Query(db.AR().From(s.table).Where(where).Limit(0, 1))
 	if err != nil {
@@ -57,9 +59,9 @@ func (s *UserModel) GetBy(where gmc.M) (ret gmc.Mss, error error) {
 	return
 }
 
-func (s *UserModel) MGetByIDs(ids []string, orderBy ...interface{}) (ret gmc.Mss, error error) {
+func (s *UserModel) MGetByIDs(ids []string, orderBy ...interface{}) (ret gmap.Mss, error error) {
 	db := s.DB()
-	ar := db.AR().From(s.table).Where(gmc.M{
+	ar := db.AR().From(s.table).Where(gmap.M{
 		s.pkey: ids,
 	})
 	if col, by := s.OrderBy(orderBy...); col != "" {
@@ -73,7 +75,7 @@ func (s *UserModel) MGetByIDs(ids []string, orderBy ...interface{}) (ret gmc.Mss
 	return
 }
 
-func (s *UserModel) MGetBy(where gmc.M, orderBy ...interface{}) (ret []gmc.Mss, error error) {
+func (s *UserModel) MGetBy(where gmap.M, orderBy ...interface{}) (ret []gmap.Mss, error error) {
 	db := s.DB()
 	ar := db.AR().From(s.table).Where(where).Limit(0, 1)
 	if col, by := s.OrderBy(orderBy...); col != "" {
@@ -87,7 +89,7 @@ func (s *UserModel) MGetBy(where gmc.M, orderBy ...interface{}) (ret []gmc.Mss, 
 	return
 }
 
-func (s *UserModel) DeleteBy(where gmc.M) (cnt int64, err error) {
+func (s *UserModel) DeleteBy(where gmap.M) (cnt int64, err error) {
 	db := s.DB()
 	rs, err := db.Exec(db.AR().Delete(s.table, where))
 	if err != nil {
@@ -99,7 +101,7 @@ func (s *UserModel) DeleteBy(where gmc.M) (cnt int64, err error) {
 
 func (s *UserModel) DeleteByIDs(ids []string) (cnt int64, err error) {
 	db := s.DB()
-	rs, err := db.Exec(db.AR().Delete(s.table, gmc.M{
+	rs, err := db.Exec(db.AR().Delete(s.table, gmap.M{
 		s.pkey: ids,
 	}))
 	if err != nil {
@@ -109,7 +111,7 @@ func (s *UserModel) DeleteByIDs(ids []string) (cnt int64, err error) {
 	return
 }
 
-func (s *UserModel) Insert(data gmc.M) (cnt int64, err error) {
+func (s *UserModel) Insert(data gmap.M) (cnt int64, err error) {
 	db := s.DB()
 	rs, err := db.Exec(db.AR().Insert(s.table, data))
 	if err != nil {
@@ -119,7 +121,7 @@ func (s *UserModel) Insert(data gmc.M) (cnt int64, err error) {
 	return
 }
 
-func (s *UserModel) InsertBatch(data []gmc.M) (cnt int64, err error) {
+func (s *UserModel) InsertBatch(data []gmap.M) (cnt int64, err error) {
 	db := s.DB()
 	rs, err := db.Exec(db.AR().InsertBatch(s.table, data))
 	if err != nil {
@@ -129,9 +131,9 @@ func (s *UserModel) InsertBatch(data []gmc.M) (cnt int64, err error) {
 	return
 }
 
-func (s *UserModel) UpdateByIDs(ids []string, data gmc.M) (cnt int64, err error) {
+func (s *UserModel) UpdateByIDs(ids []string, data gmap.M) (cnt int64, err error) {
 	db := s.DB()
-	rs, err := db.Exec(db.AR().Update(s.table, data, gmc.M{
+	rs, err := db.Exec(db.AR().Update(s.table, data, gmap.M{
 		s.pkey: ids,
 	}))
 	if err != nil {
@@ -141,7 +143,7 @@ func (s *UserModel) UpdateByIDs(ids []string, data gmc.M) (cnt int64, err error)
 	return
 }
 
-func (s *UserModel) UpdateBy(where, data gmc.M) (cnt int64, err error) {
+func (s *UserModel) UpdateBy(where, data gmap.M) (cnt int64, err error) {
 	db := s.DB()
 	rs, err := db.Exec(db.AR().Update(s.table, data, where))
 	if err != nil {
@@ -151,7 +153,7 @@ func (s *UserModel) UpdateBy(where, data gmc.M) (cnt int64, err error) {
 	return
 }
 
-func (s *UserModel) Page(where gmc.M, offset, length int, orderBy ...interface{}) (ret []gmc.Mss, total int, err error) {
+func (s *UserModel) Page(where gmap.M, offset, length int, orderBy ...interface{}) (ret []gmap.Mss, total int, err error) {
 	db := s.DB()
 	ar := db.AR().Select("count(*) as total").From(s.table)
 	if len(where) > 0 {
@@ -181,12 +183,12 @@ func (s *UserModel) Page(where gmc.M, offset, length int, orderBy ...interface{}
 func (s *UserModel) OrderBy(orderBy ...interface{}) (col, by string) {
 	if len(orderBy) > 0 {
 		switch val := orderBy[0].(type) {
-		case gmc.M:
+		case gmap.M:
 			for k, v := range val {
 				col, by = k, v.(string)
 				break
 			}
-		case gmc.Mss:
+		case gmap.Mss:
 			for k, v := range val {
 				col, by = k, v
 				break

@@ -1,6 +1,9 @@
 package controller
 
-import "github.com/snail007/gmc"
+import (
+	"github.com/snail007/gmc"
+	gmap "github.com/snail007/gmc/util/map"
+)
 
 type Base struct {
 	gmc.Controller
@@ -23,7 +26,7 @@ func (this *Base) _JSON(msg string, code int, data ...interface{}) {
 	if len(data) >= 2 {
 		url1 = data[1]
 	}
-	d := gmc.M{
+	d := gmap.M{
 		"msg":  msg,
 		"code": code,
 		"data": data0,
