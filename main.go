@@ -14,7 +14,7 @@ func main() {
 
 	// 2. add a http server service to app.
 	app.AddService(gcore.ServiceItem{
-		Service: gmc.New.HTTPServer(),
+		Service: gmc.New.HTTPServer(app.Ctx()),
 		AfterInit: func(s *gcore.ServiceItem) (err error) {
 			// do some initialize after http server initialized.
 			err = initialize.Initialize(s.Service.(*gmc.HTTPServer))
