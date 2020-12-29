@@ -2,8 +2,6 @@ module mygmcadmin
 
 go 1.12
 
-require github.com/snail007/gmc v0.0.0-20201105114426-420cc5d7b47e
+require github.com/snail007/gmc v0.0.0-20201229094800-fb5978d5ef47
 
-replace (
-	github.com/snail007/gmc  => /Users/user/go/src/github.com/snail007/gmc
-)
+replace github.com/snail007/gmc => ../gmc
