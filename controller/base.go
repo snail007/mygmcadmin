@@ -9,11 +9,11 @@ type Base struct {
 	gmc.Controller
 }
 
-func (this *Base) _JsonSuccess(msg string, data ...interface{}) {
+func (this *Base) _JSONSuccess(msg string, data ...interface{}) {
 	this._JSON(msg,200,data...)
 }
 
-func (this *Base) _JsonFail(msg string) {
+func (this *Base) _JSONFail(msg string) {
 	this._JSON(msg,500)
 }
 

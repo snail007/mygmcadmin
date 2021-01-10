@@ -24,7 +24,7 @@ func (this *Login) Auth() {
 	}
 	u := this.Session.Get("admin")
 	if u != nil && u.(gmap.Mss)["username"] != "" {
-		this._JsonSuccess("","","/main/index")
+		this._JSONSuccess("","","/main/index")
 	}
 	captcha := strings.TrimSpace(this.Ctx.POST("captcha"))
 	captchaSession0:= this.Session.Get(capKEY)
@@ -35,24 +35,24 @@ func (this *Login) Auth() {
 
 	this.Session.Delete(capKEY)
 	if captchaSession == "" || captcha == "" || captchaSession != strings.ToLower(captcha) {
-		this._JsonFail("验证码错误")
+		this._JSONFail("验证码错误")
 	}
 
 	username := this.Ctx.POST("username")
 	password := this.Ctx.POST("password")
 	if password == "" || username == "" {
-		this._JsonFail("信息不完整")
+		this._JSONFail("信息不完整")
 	}
 	dbUser, err := model.User.GetBy(gmap.M{"username": username})
 	if err != nil || len(dbUser) == 0 {
-		this._JsonFail("用户名或密码错误")
+		this._JSONFail("用户名或密码错误")
 	}
 	if dbUser["password"] != model.EncodePassword(password) {
-		this._JsonFail("用户名或密码错误")
+		this._JSONFail("用户名或密码错误")
 	}
 	delete(dbUser, "password")
 	this.Session.Set("admin", dbUser)
-	this._JsonSuccess("","","/main/index")
+	this._JSONSuccess("","","/main/index")
 }
 
 func (this *Login) Index_() {

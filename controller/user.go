@@ -21,10 +21,10 @@ func (this *User) Profile() {
 		}
 		_, err := model.User.UpdateByIDs([]string{this.User["user_id"]}, data)
 		this.StopE(err, func() {
-			this._JsonFail(err.Error())
+			this._JSONFail(err.Error())
 		}, func() {
 			this.Session.Set("admin",this.User)
-			this._JsonSuccess("", nil, "/user/profile")
+			this._JSONSuccess("", nil, "/user/profile")
 		})
 	} else {
 		this.View.Layout("page").Render("user/profile")
@@ -37,15 +37,15 @@ func (this *User) Password() {
 		password1 := this.Ctx.POST("password1")
 		password2 := this.Ctx.POST("password2")
 		if password==""||password1 == ""||(password1 != password2) {
-			this._JsonFail("信息不完整")
+			this._JSONFail("信息不完整")
 		}
 		password0 := ""
 		dbUser, err := model.User.GetByID(this.User["user_id"])
 		if err != nil || len(dbUser) == 0 {
-			this._JsonFail("用户不存在")
+			this._JSONFail("用户不存在")
 		}
 		if dbUser["password"]!=model.EncodePassword(password){
-			this._JsonFail("当前密码错误")
+			this._JSONFail("当前密码错误")
 		}
 		password0=model.EncodePassword(password1)
 		data := gmap.M{
@@ -54,9 +54,9 @@ func (this *User) Password() {
 		}
 		_, err = model.User.UpdateByIDs([]string{this.User["user_id"]}, data)
 		this.StopE(err, func() {
-			this._JsonFail(err.Error())
+			this._JSONFail(err.Error())
 		}, func() {
-			this._JsonSuccess("", nil, "/user/password")
+			this._JSONSuccess("", nil, "/user/password")
 		})
 	} else {
 		this.View.Layout("page").Render("user/password")
@@ -73,11 +73,11 @@ func (this *User) Create() {
 	password := this.Ctx.POST("password")
 	password1 := this.Ctx.POST("password1")
 	if username == "" || password == "" || password != password1 {
-		this._JsonFail("信息不完整")
+		this._JSONFail("信息不完整")
 	}
 	dbUser, err := model.User.GetBy(gmap.M{"username": username})
 	if err != nil || len(dbUser) > 0 {
-		this._JsonFail("用户已经存在")
+		this._JSONFail("用户已经存在")
 	}
 	now := time.Now().Unix()
 	data := gmap.M{
@@ -89,9 +89,9 @@ func (this *User) Create() {
 	}
 	_, err = model.User.Insert(data)
 	this.StopE(err, func() {
-		this._JsonFail(err.Error())
+		this._JSONFail(err.Error())
 	}, func() {
-		this._JsonSuccess("", nil, "/user/list")
+		this._JSONSuccess("", nil, "/user/list")
 	})
 }
 
@@ -102,7 +102,7 @@ func (this *User) Edit() {
 	}
 	user, err := model.User.GetByID(userID)
 	this.StopE(err, func() {
-		this._JsonFail(err.Error())
+		this._JSONFail(err.Error())
 	})
 	this.View.Set("user", user)
 	this.View.Layout("form").Render("user/form")
@@ -118,13 +118,13 @@ func (this *User) Save() {
 	}
 	if password != "" {
 		if password != password1 {
-			this._JsonFail("信息不完整")
+			this._JSONFail("信息不完整")
 		}
 		password = model.EncodePassword(password)
 	}
 	dbUser, err := model.User.GetByID(userID)
 	if err != nil || len(dbUser) == 0 {
-		this._JsonFail("用户不存在")
+		this._JSONFail("用户不存在")
 	}
 	data := gmap.M{
 		"nickname":    nickname,
@@ -135,9 +135,9 @@ func (this *User) Save() {
 	}
 	_, err = model.User.UpdateByIDs([]string{userID}, data)
 	this.StopE(err, func() {
-		this._JsonFail(err.Error())
+		this._JSONFail(err.Error())
 	}, func() {
-		this._JsonSuccess("", nil, "/user/list")
+		this._JSONSuccess("", nil, "/user/list")
 	})
 }
 
@@ -150,14 +150,14 @@ func (this *User) Delete() {
 	}
 	for _, v := range ids {
 		if v == "1" {
-			this._JsonFail("系统账号禁止删除")
+			this._JSONFail("系统账号禁止删除")
 		}
 	}
 	_, err := model.User.UpdateByIDs(ids, gmap.M{"is_delete": 1})
 	this.StopE(err, func() {
-		this._JsonFail(err.Error())
+		this._JSONFail(err.Error())
 	})
-	this._JsonSuccess("", nil, "/user/list")
+	this._JSONSuccess("", nil, "/user/list")
 }
 
 func (this *User) List() {
