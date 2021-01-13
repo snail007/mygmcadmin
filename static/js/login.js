@@ -15,5 +15,8 @@ $(document).ready(function () {
                 alert(data.msg || "操作失败，请重试。")
             }
         }
-    })
+    });
+    if(parent!=self){
+        parent.location=location;
+    }
 });

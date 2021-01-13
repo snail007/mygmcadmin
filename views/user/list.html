@@ -10,19 +10,21 @@
                     </div>
 
                     <form class="search-bar ml-md-auto" method="get" action="#!" role="form">
-                        <input type="hidden" name="search_field" id="search-field" value="username"/>
                         <div class="input-group ml-md-auto">
-                            <div class="input-group-prepend">
-                                <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown"
-                                        aria-haspopup="true" aria-expanded="false" id="search-btn">用户名
-                                </button>
-                                <div class="dropdown-menu" style="">
-                                    <a class="dropdown-item" href="#!" data-field="username">用户名</a>
-                                    <a class="dropdown-item" href="#!" data-field="nickname">昵称</a>
-                                    <a class="dropdown-item" href="#!" data-field="user_id">用户ID</a>
-                                </div>
+                            <div class="btn-group btn-group-xs">
+                                <input type="hidden" name="search_field">
+                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
+                                        aria-haspopup="true" aria-expanded="false"></button>
+                                <ul class="dropdown-menu" value="">
+                                    <li><a class="dropdown-item" href="javascript:void(0);" value="username">用户名</a></li>
+                                    <li><a class="dropdown-item" href="javascript:void(0);" value="nickname">昵称</a></li>
+                                    <li><a class="dropdown-item" href="javascript:void(0);" value="user_id">用户ID</a></li>
+                                </ul>
                             </div>
                             <input type="text" class="form-control" name="keyword" placeholder="请输入">
+                            {{if .G.keyword}}
+                                <a class="btn btn-warning m-r-5" href="/user/list"><i class="mdi mdi-check"></i> 重置</a>
+                            {{end}}
                         </div>
                     </form>
                 </div>
