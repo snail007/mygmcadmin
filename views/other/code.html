@@ -368,16 +368,24 @@
         <div class="col-md-6">
             <div class="card card-bordered">
                 <header class="card-header">
-                    <div class="card-title">片段名称</div>
+                    <div class="card-title">工具提示</div>
                 </header>
                 <div class="card-body">
-                    <p class="text text-default">适用布局：list、page、form、全部.</p>
+                    <p class="text text-default">适用布局：全部.</p>
                     <p class="text text-success">效果：</p>
                     <div class="container" style="padding-bottom: 10px;">
-                        片段html内容
+                        <button type="button" class="btn btn-secondary" data-toggle="tooltip" data-placement="top"
+                                title="" data-original-title="Tooltip on 顶部">
+                            Tooltip on 顶部
+                        </button>
+                        <span class="mdi mdi-help-circle-outline" data-toggle="tooltip" title="提示文本"></span>
                     </div>
                     <p class="text text-success">代码如下：</p>
-                    <pre>{{html `片段html内容`|replace "\n" "<br>"}}</pre>
+                    <pre>{{html `<button type="button" class="btn btn-secondary" data-toggle="tooltip" data-placement="top"
+        title="" data-original-title="Tooltip on 顶部">
+    Tooltip on 顶部
+</button>
+<span class="mdi mdi-help-circle-outline" data-toggle="tooltip" title="提示文本"></span>`|replace "\n" "<br>"}}</pre>
                 </div>
             </div>
         </div>
