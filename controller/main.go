@@ -11,3 +11,7 @@ func (this *Main) Index() {
 func (this *Main) Main() {
 	this.View.Layout("page").Render("main/main")
 }
+
+func (this *Main) Other() {
+	this.View.Layout("list").Render("other/code")
+}
