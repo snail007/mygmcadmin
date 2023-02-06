@@ -22,7 +22,7 @@ func main() {
 	})
 
 	// 3. run the app
-	if e := gmc.Err.Stack(app.Run());e!=""{
-		app.Logger().Panic(e)
+	if e := gmc.Err.Stack(app.Run()); e != "" {
+		app.Logger().Fatal(e)
 	}
 }
